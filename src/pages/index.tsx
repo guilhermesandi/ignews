@@ -1,4 +1,4 @@
-import type { NextPage, GetServerSideProps } from 'next';
+import type { NextPage, GetStaticProps } from 'next';
 import Head from 'next/head';
 
 import { stripe } from '../services/stripe';
@@ -39,7 +39,7 @@ const Home: NextPage<HomeProps> = ({ product }: HomeProps) => {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const price = await stripe.prices.retrieve('price_1LTR9BDBrCpQvDbMTaEar4bv');
 
   const priceUnitAmount = !!price.unit_amount ? price.unit_amount : 0;
@@ -56,6 +56,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {
       product
-    }
+    },
+    revalidate: 60 * 60 * 24, // 24 hours
   }
 }
